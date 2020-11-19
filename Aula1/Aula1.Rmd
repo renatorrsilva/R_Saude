@@ -1,0 +1,113 @@
+---
+title: "Introdução ao software R: Aplicações na área da saúde - Módulo I"
+subtitle: "Aula 1"
+author: "Presented by Renato Rodrigues Silva"
+institute: "Federal University of Goias."
+date: "(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+
+---
+class: middle
+##Bem-vindos!!!
+
+
+- O curso, Introdução ao software R: Aplicações na área da saúde, objetiva capacitar os funcionários e gestores da Secretaria da Saúde do Estado de Goiás para que eles possam desenvolver melhor as suas atividades. 
+
+- O curso também será aberto para outros profissionais liberais da área da saúde, incluindo alguns docentes, discentes e pesquisadores da Escola de Medicina da Universidade Federal de Goiás.
+
+
+---
+class: middle
+##Programação:
+
+.pull-left[
+Dia 1:
+
+- Introdução ao git hub;
+
+- Introdução ao software R;
+
+- Introdução ao ambiente de desenvolvimento integrado RStudio.
+
+
+
+Dia 2:
+
+- Medidas Resumo com software R
+
+- Visualização de dados com o pacote esquisse.
+]
+
+
+.pull-right[
+Dia 3:
+
+- Intervalos de Confiança
+
+- Testes de Comparação de Médias
+
+- Análise de Variância com 1 fator
+
+- Análise de Correlação
+
+- Testes Não Paramétricos para comparar dois grupos 
+
+- Testes Não Paramétricos para comparar mais de dois grupos 
+
+Dia 4:
+
+- Estudo de Caso
+]
+
+Obs: O cronograma pode mudar de acordo com a necessidades dos participantes.
+
+---
+class: middle
+##Introdução ao GitHub
+
+###Git 
+- Git é um sistema de **controle de versão** desenvolvido por Linus Torvalds (Hostinger, 2015?)
+
+###Controle de versão
+
+- Controle de versão permite o acompanhamentio de mudanças feitas no código-fonte. 
+
+- Também registra quem efetuou a mudança e possibilita a restauração do código removido ou modificado.
+
+- Não há códigos sobrescritos uma vez que o Git salva múltiplas cópias no repositório (Hostinger, 2015?). 
+
+---
+class: middle
+##Introdução ao GitHub
+
+
+###Git versus GitHub
+
+- Simplificando, Git é um sistema de controle de versão que permite gerenciar e controlar o histórico do código-fonte (Devmountain blog, 2015?). 
+
+- GitHub é um serviço de hospedagem baseado em nuvem que permite gerenciar repositórios Git. Se você tiver projetos de código aberto que usam Git, o GitHub foi projetado para ajudá-lo a gerenciá-los melhor (Devmountain blog, 2015?).
+
+---
+##Como baixar arquivos do GitHub
+
+- Como exmeplo, vamos utilizar o repositório das nossas aulas.
+
+- Primeiro passo digite no seu web browser o seguinte endereço:
+https://github.com/renatorrsilva/Curso_R_Saude:
+
+
+---
+##Referências 
+
+
+- O Que é GitHub e para que é usado?. Hostinger [2015?]. Disponível em: <https://www.hostinger.com.br/tutoriais/o-que-github//>. Acesso em: 19 de nov. de 2020.
+
+- The Devmountain blog, Devmoutain [2015?]. Disponível em: <https://blog.devmountain.com/git-vs-github-whats-the-difference/#:~:text=GitHub%E2%80%A6-,what's%20the%20difference%3F,help%20you%20better%20manage%20them.> Acesso em: 19 de nov. de 2020.
+
