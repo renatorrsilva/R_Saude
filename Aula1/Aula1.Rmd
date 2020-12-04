@@ -1029,7 +1029,6 @@ Disponível em: <https://pt.wikihow.com/Encontrar-o-Caminho-de-um-Arquivo-no-Win
 - Notes on R: A Programming Environment for Data Analysis and Graphics (W. N. Venables, D. M. Smith and the R Core Team,2004)
 
 
-
 - ANDERSON, E. C. Reproducible Research Course. Disponível em:
 <https://eriqande.github.io/rep-res-web/lectures/vectorization_recycling_and_indexing.html>. Acesso em: 20 de nov. de 2020.
 
