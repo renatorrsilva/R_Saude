@@ -1,0 +1,761 @@
+---
+title: "Introdução ao software R: Aplicações na área da saúde - Módulo I"
+subtitle: "Aula 3"
+author: "Presented by Renato Rodrigues Silva"
+institute: "Federal University of Goias."
+date: "(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+
+---
+class: middle
+##Introdução
+
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+
+library(knitr)
+library(kableExtra)
+
+```
+
+
+
+- Na aula de hoje serão vistos algumas linhas de comando referentes a medidas resumo.
+
+- Além disso, vamos ter uma introdução a inferência estatística no R.
+
+- Mas antes, vamos apgar todos os objetos da memória, carregar a biblioteca tidyverse e ler os dados de diabetes.
+
+
+```{r, message = FALSE, warning = FALSE}
+
+rm(list=ls())
+
+library(tidyverse)
+
+dat = read.csv("diabetes.csv", header = TRUE)
+
+```
+
+
+---
+class: middle
+##Introdução
+
+
+- Agora vamos utilizar o que aprendemos na última aula e transformar a variável Outcome em uma variável qualitativa
+
+
+```{r,  message = FALSE, warning = FALSE}
+
+dat = mutate(dat, Outcome = factor(Outcome))
+
+```
+
+- Pronto, agora podemos começar a primeira parte da aula 3.
+
+
+
+---
+class: middle
+##Medidas Resumo
+
+###Como acessar vetores dentro de um data.frame
+
+- Utlizando o símbolo $ podemos acessar um vetor dentro do data.frame.
+
+- Exemplo queremos acessar a variável Glicose. 
+
+```{r}
+
+dat$Glucose
+
+```
+
+
+---
+class: middle
+##Medidas Resumo
+
+- Medidas resumo reduz o conjunto de observações a respeito de uma variável em um único número (BUSSAB & MORETTIN, 1988).
+
+##Tipos de medidas de resumo
+
+- Medidas de Tendência Central: média, moda, mediana 
+
+- Medidas de Dispersão: variância, desvio padrão.
+
+- Quantis: 1 quartil, mediana, 3 quartil e percentis em geral.
+
+
+
+---
+class: middle
+##Medidas de Tendência Central
+###Média aritmética
+
+- Para calcular a média aritmética no R, basta usar a função mean. Exemplo: Vamos calcular a média da quantidade de glicose nos indivíduos
+
+
+```{r}
+
+mean(dat$Glucose)
+
+```
+
+###Mediana
+
+- Mediana é o valor que ocupa a posição central do conjunto de dados ordendos. Ou seja, separa a metade dos dados absixo dela e metade acima. Exemplo: Vamos calcular a mediana dos valores de 
+
+```{r}
+
+median(dat$Glucose)
+
+```
+
+
+---
+class: middle
+##Medidas de Tendência Central
+
+###Mediana Revisitada
+
+- Para entendermos o conceito um pouco melhor, vamos usar um conjunto de dados bem pequeno
+
+
+```{r}
+
+x = c(1,5,6,8,9)
+
+```
+
+
+- Observe que o valor 6 separa os dados em 50% inferiores $(1,5)$ e 50% superiores $(8,9)$. Portanto, ele é a mediana. Caso, tivessem um número par de observações a mediana seria o ponto médio entre os valores que separa a metade inferior da superior.
+
+
+```{r}
+median(x)
+```
+
+
+---
+class: middle
+##Medidas de Dispersão
+
+###Variância
+
+.pull-left[
+
+- É uma medida que mensura a proximidade das observações com relação a média.
+
+- Para entendermos melhor o conceito vamos usar 4 conjunto de dados pequenos 
+
+```{r}
+
+x = c(3,4,5,6,7)
+
+y = c(1,3,5,7,9)
+
+z = c(5,5,5,5,5)
+
+
+
+```
+
+]
+
+
+.pull-right[
+
+```{r, eval= FALSE}
+
+mean(x)
+var(x)
+mean(y)
+var(y)
+mean(z)
+var(z)
+
+```
+
+
+```{r, echo =FALSE}
+
+dt = data.frame('dados' = c("x","y","z"),
+                'media' =c(mean(x), mean(y), mean(z)),
+                'variancia' =c(var(x), var(y), var(z)))
+
+dt %>%
+  kbl() %>%
+  kable_styling()
+
+```
+
+
+]
+
+
+
+---
+class: middle
+##Medidas de Dispersão
+
+###Variância
+
+- Vamos calcular a variância da quantidade de glicose
+
+
+```{r}
+var(dat$Glucose)
+```
+
+
+###Desvio Padrão
+
+- O desvio padrão é raiz quadrada da variância. A sua utilidade é estar na mesma unidade da variável.
+
+- Vamos calcular o desvio padrão da quantidade de glicose
+
+```{r}
+sd(dat$Glucose)
+```
+
+
+---
+class: middle
+
+##Medidas resumo 
+
+- A função summary calcula automaticamente algumas medidas resumo de interesse, você pode aplicar ela no vetor ou no data.frame
+
+```{r}
+summary(dat)
+```
+
+---
+class: middle 
+
+##Inferência Estatística
+
+##Inferir
+
+- Inferir significa: deduzir, concluir por inferência ou por dedução, geralmente partindo de indícios, de fatos ou de raciocínios (Dicionário Online de Português, 2017?).
+
+- A inferência utiliza raciocínio dedutivo, ou seja, o raciocínio é feito do particular para o geral.
+
+
+##Definições:
+
+- A inferência estatística é um processo de inferir características de uma **população** por meio da observação de uma **amostra**. 
+
+- A população é o conjunto de todos os elementos ou resultados sob investigação.
+
+- Amostra é qualquer conjunto da população.
+
+---
+class: middle 
+
+##Alguns comentários
+
+- Os estatísticos fazem algumas pressuposições sobre a população:
+
+a.    A população é infinita. 
+
+b.    A frequência (densidade) da população é modelada por uma distribuição de probabilidade com parâmetros desconhecidos.
+
+
+- Parâmetros: Quantidades que representam característica da **população** e que são **desconhecidos.**
+
+- Estimadores: Quantidades calculadas a partir da **amostra**. 
+
+
+---
+class: middle 
+
+
+##Exemplo: Associações entre variáveis relacionadas ao diabetes em mulheres indígenas do povo Pima
+
+- Nesse exemplo, podemos considerar que o conjunto de todos os índices de massa corporal de todas as mulheres índigenas do Povo Pima é a população.
+
+- Por outro lado, os dados que temos em nosso data.frame é apenas um subconjunto da população, portanto uma amostra. 
+
+- O objetivo da inferência é a partir da amostra tirar conclusões a respeito da população.
+
+- **Importante !!!**: Na vida real, por muitas vezes, a população é finita, mas é inviável a mensuração de todos os elementos da amostra. 
+
+- Exemplo: pesquisa eleitoral.
+
+
+
+---
+class: middle 
+
+##Intervalo de confiança
+
+- Acredito que a partir desse ponto, todos nós concordamos que uma amostra é parte de uma população.
+
+- Ainda, concordamos que um dos objetivos de estimar a média amostral é ter um valor que represente a média da população que é desconhecida. Agora pense o seguinte:
+
+- Se pesquisadores distintos tomarem amostras da população, é natural considerar que elas serão distintas, correto?
+
+- Sendo assim, uma pergunta surge: Se nós calcularmos a média a partir de uma dessas amostra. Qual seria  a precisão dessa estimativa ? 
+
+---
+class: middle 
+
+##Intervalo de confiança
+
+
+- Pensando sob essa perspectiva, talvez seja melhor termos um intervalo de valores que possa conter ou não o verdadeiro da média populacional, correto?
+
+- Essa é o conceito de um intervalo de confiança. 
+
+- Um intervalo de confiança para média populacional é um intervalo que pode conter ou não o valor da média populacional dada uma certa probabilidade.
+
+- O intervalo de confiança para média populacional nos fornecerá uma ideia de precisão da estimativa. 
+
+- Pois, intervalos com pequena amplitude, significa que há uma grande precisão na estimativa. Enquanto que intervalos com amplitudes maiores significa que há baixa precisão.
+
+
+
+---
+class: middle 
+
+##Intervalo de confiança no R
+
+- Vamos calcular o intervalo de confiança de 95% de confiança  para a média do índice de massa corporal.
+
+- Para isso utiliza-se a função t.test
+
+
+```{r}
+
+t.test(dat$BMI, conf.level=0.95)$conf.int
+
+```
+
+
+- Interpretação: O intervalo construído tem 95% de probabilidade de conter a média populacional. 
+
+- Veja que essa afirmação é muito diferente de dizer que a probabilidade da média populacional estar entre 31,4 e 32,55 seja 95%. Essa última afirmação está errada.
+
+---
+class: middle 
+
+##Hipótese Estatística
+
+- Uma hipótese estatística é uma afirmação acerca dos parâmetros da população. Exemplo: A média populacional do IMC é igual a 20. 
+
+##Teste de Hipóteses
+
+- Um teste de hipótese é uma **regra de decisão** para rejeitar ou não uma hipótese nula.
+
+###Hipótese Nula e Alternativa
+
+- Hipótese nula é a hipótese a ser testada. A hipótese complementar a nula é a hipótese alternativa.
+
+
+
+
+---
+class: middle 
+
+
+##Teste de Hipóteses
+
+- Uma vez que um teste de hipótese é uma regra de decisão, esta regra é passível de erros.
+
+- **Erro tipo I**: Rejeitar a hipótese nula, quando a hipótese nula é verdadeira.
+
+- **Erro tipo II**:  Não rejeitar a hipótese nula, quando a hipótese nula é falsa.
+
+
+- Importante, não é possível minimizar os dois erros simultaneamente. A solução encontrada pelos estatísticos é fixar o erro tipo I e minimizar o erro tipo II. 
+
+- Por convenção, utiliza-se erro tipo I igual a 5%. O erro tipo I é também chamado de nível de significância.
+
+
+
+---
+class: middle 
+
+
+##Teste de Hipóteses
+
+- Agora precisamos de um critério para rejeitar ou não a hipótese nula sujeita ao erro tipo I. Usaremos  o valor-p.
+
+###Valor-p
+
+- Um valor p é uma medida da probabilidade de que uma diferença observada possa ter ocorrido apenas por acaso.
+
+- Um valor p menor significa que há evidências mais fortes a favor da hipótese alternativa. 
+
+- Na prática, usamos a seguinte regra: se o valor p for menor que 0.05 (nível de significância), vamos rejeitar a hipótese nula.
+
+
+- Explicações mais detalhadas sobre valor p pode ser visto nesta [aula](https://www.youtube.com/watch?v=RVxHlsIw_Do&t=9s).
+
+
+
+
+---
+class: middle 
+
+
+##Teste de Hipóteses para média populacional no R
+
+- Usamos a função `t.test` para aplicarmos teste de hipóteses.
+
+- Suponha que desejamos testar que a média populacional do IMC seja igual a 25.
+
+- Podemos fazer da seguinte forma:
+
+
+```{r}
+
+t.test(BMI ~ 1, mu=25,data=dat)
+
+```
+
+-   Voce pode usar a seguinte  sintaxe também: `t.test(dat$BMI, mu=25,data=dat).`
+
+
+---
+class: middle 
+
+
+##Teste de Hipóteses - Inferência para duas médias (amostras independentes)
+
+- Vamos testar se a média do IMC das mulheres que testaram positivo para diabetes é igual  
+a média do IMC para aquelas que testaram negativo.
+
+- Aqui, percebemos que o IMC das mulheres com diabetes foram extraídos independentemente da mulheres saudáveis, por isso vamos considerar que as amostras são independentes.
+
+###Pressuposições dos testes
+
+- A população de cada grupo pode ser representada por distribuição normal.
+
+- As variâncias dos duas populações são iguais.
+
+- Alternativamente, podemos considerar que essas variâncias são diferentes.
+
+
+---
+class: middle 
+
+##Teste de Hipóteses - Igualdade de Variâncias
+
+- Podemos notar que o primeiro passo para fazer o teste de média entre dois grupos com amostras independentes.
+
+- Logo, precisamos fazer o teste de igualdade de variâncias.
+
+```{r}
+
+var.test(BMI ~ Outcome, data = dat, 
+         alternative = "two.sided")
+
+```
+
+
+
+---
+class: middle 
+
+
+##Teste de Hipóteses - Inferência para duas médias (amostras independentes)
+
+- Uma vez que não se rejeita a hipótese nula de igualdade de variâncias, procede-se o teste 
+de comparação de médias de dois grupos da seguinte forma:
+
+
+```{r}
+
+t.test(BMI ~ Outcome, data = dat, 
+       paired = FALSE, var.equal = FALSE,
+       alternative = "two.sided")
+
+```
+
+
+---
+class: middle 
+
+##Análise de Correlação
+
+.pull-left[
+
+- Correlação de Pearson $(r)$, mede a dependência linear entre duas variáveis quantitativa contínua $(x , y)$. 
+
+- A correlação assume valores entre $-1$ á $1.$
+
+- Podemos fazer um teste de correlação paramétrica para verificar a hipótese se a correlação é 
+
+
+
+]
+
+
+.pull-right[
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE}
+
+library(patchwork)
+a = 0
+b = 2
+x = 1:50
+e = rnorm(50, mean=0,sd=0.001)
+ y = a+b*x+e
+ 
+ a2= 0
+ b2 = -2
+ x2 = 1:50
+ e = rnorm(50, mean=0,sd=0.001)
+ y2 = a2+b2*x2+e
+
+ x3 = rnorm(50, 0, 0.01)
+ 
+ dats = data.frame(x,x2,x3,y,y2)
+
+p1 = ggplot(dats) +
+ aes(x = x, y = y) +
+ geom_point(size = 1L, colour = "#0c4c8a") +
+labs(title = "Correlação igual a 1") +
+ theme_minimal()
+
+p2 = ggplot(dats) +
+ aes(x = x2, y = y2) +
+ geom_point(size = 1L, colour = "#0c4c8a") +
+labs(title = "Correlação igual a -1") +
+ theme_minimal()
+
+
+p3 = ggplot(dats) +
+ aes(x = x3, y = y) +
+ geom_point(size = 1L, colour = "#0c4c8a") +
+labs(title = "Correlação igual a 0") +
+  theme_minimal()
+
+  
+ 
+
+p1 + p2 + p3 + plot_layout(ncol=1)
+
+```
+
+
+
+]
+
+
+---
+class: middle 
+
+##Análise de Correlação no R
+
+- Para fazer análise de correlação no R, vamos usar a função `cor`
+
+- Aqui vamos calcular a correlação entre todas variáveis quantitativas contínuas no conjunto de dados
+ de diabetes: Glucose, BloodPressure , SkinThickness , Insulin ,  Age ,
+ 
+ 
+```{r, eval=FALSE}
+
+vars = c( "Pregnancies", "Outcome" )
+
+datq = select(dat, -one_of(vars))
+
+cor(datq)
+
+```
+
+
+
+
+---
+class: middle 
+
+##Análise de Correlação no R
+
+
+```{r, echo=FALSE}
+
+vars = c( "Pregnancies", "Outcome" )
+
+datq = select(dat, -one_of(vars))
+
+cor(datq)
+
+```
+
+
+---
+class: middle 
+
+##Gráfico com análise de correlação no R
+
+- Se instalarmos a biblioteca `PerformanceAnalytics`, podemos fazer alguns gráficos interessantes com a função `chart.Correlation`
+
+
+
+
+```{r, eval=FALSE}
+
+#install.packages("PerformanceAnalytics")
+library("PerformanceAnalytics")
+
+
+chart.Correlation(
+  datq ,
+  histogram = TRUE,
+  method = c("pearson")
+)
+
+```
+
+
+---
+class: middle 
+
+##Gráfico com análise de correlação no R
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE}
+
+#install.packages("PerformanceAnalytics")
+library("PerformanceAnalytics")
+
+
+chart.Correlation(
+  datq ,
+  histogram = TRUE,
+  method = c("pearson")
+)
+
+```
+
+
+---
+class: middle 
+
+##Regressão Linear Simples
+
+- Modelos de Regressão são indicados para verificar a relação entre uma variável resposta e uma ou mais  variáveis explicativas.
+
+- Um modelo de regressão linear modela a relação entre uma variável resposta e uma variável explicativa na forma $y = a x +  b.$
+
+##Rgressão Linear Simples no R
+
+- Podemos fazer um modelo de regressão linear simples no R com o comando `lm`.
+
+- O comando `summary` fornece informações a respeito do R2, teste F para regressão, estimativa dos coeficientes, teste de hipótese para coeficientes, entre outras coisas.
+
+- Exemplo : Queremos saber a relação entre quantidade de espessura da pele e IMC.
+
+
+
+---
+class: middle 
+
+##Regressão Linear Simples no R
+
+```{r}
+
+mod = lm(Glucose ~ Insulin, data = dat)
+
+summary(mod)
+
+```
+
+
+---
+class: middle 
+
+##Gráfico de Regressão Linear Simples no R
+
+- Podemos fazer um gráfico bem completo sobre regressão linear simples no R com a biblioteca ggpubr.
+
+- Nesse gráfico podemos ter informações sobre o ajuste da reta, a raiz quadrada do R2
+
+
+```{r, eval= FALSE}
+
+#install.packages("ggpubr")
+
+library("ggpubr")
+
+ggscatter(dat, x = "Insulin", y = "Glucose", 
+          add = "reg.line", conf.int = FALSE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Insulina", ylab = "Glicose")
+
+```
+
+
+---
+class: middle 
+
+##Gráfico de Regressão Linear Simples no R
+
+
+```{r, echo= FALSE, warning=FALSE, message = FALSE}
+
+#install.packages("ggpubr")
+
+library("ggpubr")
+
+ggscatter(dat, x = "Insulin", y = "Glucose", 
+          add = "reg.line", conf.int = FALSE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Insulina", ylab = "Glicose")
+
+```
+
+---
+class: middle 
+
+##Regressão Linear Múltipla no R
+
+
+- Modelos de Regressão múltipla é quando se tem mais de uma variável explicativa.
+
+- Podemos fazer regressão múltipla no R, usando o mesmo comando `lm`.
+
+- Exemplo: Modelar a Glicose em função da Insulina e do Resultado do teste.
+
+
+
+---
+class: middle 
+
+##Regressão Linear Múltipla no R
+
+
+
+```{r}
+
+mod = lm(Glucose ~ Outcome + Insulin, data = dat)
+
+summary(mod)
+
+```
+
+
+
+---
+##Referências
+
+- WICKHAM, H.; GROMULRMUND, G. R for Data Science, 2017. O'Reilly Media. Disponível em: https://r4ds.had.co.nz/explore-intro.html. Acesso em: 26 de nov. de 2020.
+
+- VIEIRA, S. Bioestatística. Tópicos Avançados. 4 edição. 2018.
+
+- BUSSAB, W. O.; MORETTIN, P. A. – Estatística Básica. Atual Editora, São Paulo, 1988.
+
+- Dicionário Online de Português. [2017?]. Disponível em: <https://www.dicio.com.br/inferir/>.
+Acesso em: 03 de dez. de 2020.
+
