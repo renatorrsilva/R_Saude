@@ -1,19 +1,24 @@
----
-title: "Introdução ao software R: Aplicações na área da saúde - Módulo I"
-subtitle: "Aula 4 - Estudo de Caso"
-author: "Presented by Renato Rodrigues Silva"
-institute: "Federal University of Goias."
-date: "(updated: `r Sys.Date()`)"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introdução ao software R: Aplicações na área da saúde - Módulo I</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Presented by Renato Rodrigues Silva" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
 
+# Introdução ao software R: Aplicações na área da saúde - Módulo I
+## Aula 4 - Estudo de Caso
+### Presented by Renato Rodrigues Silva
+### Federal University of Goias.
+### (updated: 2020-12-11)
 
 ---
+
 
 
 
@@ -42,23 +47,16 @@ class: middle
 
 - Vamos começar carregando a biblioteca tidyverse, lendo os dados e dando uma visualizada rápida com o comando
 
-```{r, eval = FALSE, message = FALSE, warning = FALSE}
 
+```r
 library(tidyverse)
 
 dat = read.csv("sivep_atualizado.csv", header= TRUE)
 
 glimpse(dat)
-
 ```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
 
-library(tidyverse)
-
-dat = read.csv("sivep_atualizado.csv", header= TRUE)
-
-```
 
 
 ---
@@ -83,9 +81,15 @@ class: middle
 
 - O comando `table` calcula a frequencia absoluta.
 
-```{r}
 
+```r
 table( dat$CLASSI_FIN,exclude = NULL)
+```
+
+```
+## 
+##    1    2    3    4    5 &lt;NA&gt; 
+##   19   85   32 2336 4988  880
 ```
 
 
@@ -104,8 +108,15 @@ class: middle
 
 - Vamos contar a frequência deles
 
-```{r}
+
+```r
 table(dat$CRITERIO, exclude = NULL)
+```
+
+```
+## 
+##    1    2    3    4 &lt;NA&gt; 
+## 6768  116   90  209 1157
 ```
 
 
@@ -119,8 +130,20 @@ class: middle
 
 - Fazendo a tabela de contigência entre os campos `CRITERIO` e `CLASSI_FIN`, temos:
 
-```{r}
-table(dat$CRITERIO, dat$CLASSI_FIN, exclude = NULL) %>% addmargins()
+
+```r
+table(dat$CRITERIO, dat$CLASSI_FIN, exclude = NULL) %&gt;% addmargins()
+```
+
+```
+##       
+##           1    2    3    4    5 &lt;NA&gt;  Sum
+##   1      19   84   23 2063 4579    0 6768
+##   2       0    0    3   64   49    0  116
+##   3       0    0    3   63   24    0   90
+##   4       0    0    2   23  184    0  209
+##   &lt;NA&gt;    0    1    1  123  152  880 1157
+##   Sum    19   85   32 2336 4988  880 8340
 ```
 
 ---
@@ -145,8 +168,20 @@ class: middle
 
 ###Comando xtabs: Sintaxe  (frequencia ~ linhas + colunas)
 
-```{r}
-xtabs(~CRITERIO + CLASSI_FIN, data=dat, addNA = TRUE) %>% addmargins() 
+
+```r
+xtabs(~CRITERIO + CLASSI_FIN, data=dat, addNA = TRUE) %&gt;% addmargins() 
+```
+
+```
+##         CLASSI_FIN
+## CRITERIO    1    2    3    4    5 &lt;NA&gt;  Sum
+##     1      19   84   23 2063 4579    0 6768
+##     2       0    0    3   64   49    0  116
+##     3       0    0    3   63   24    0   90
+##     4       0    0    2   23  184    0  209
+##     &lt;NA&gt;    0    1    1  123  152  880 1157
+##     Sum    19   85   32 2336 4988  880 8340
 ```
 
 
@@ -171,11 +206,19 @@ Positivo para outros vírus? = 1.
 class: middle
 ###Contando registros de testes RT- PCR
 
-```{r}
 
-xtabs( ~POS_PCROUT + PCR_SARS2, data = dat, subset = CLASSI_FIN == 5 & CRITERIO == 1, addNA = TRUE) %>% addmargins() 
+```r
+xtabs( ~POS_PCROUT + PCR_SARS2, data = dat, subset = CLASSI_FIN == 5 &amp; CRITERIO == 1, addNA = TRUE) %&gt;% addmargins() 
+```
 
-
+```
+##           PCR_SARS2
+## POS_PCROUT    1 &lt;NA&gt;  Sum
+##       1    3591   53 3644
+##       2       0   20   20
+##       9       0    6    6
+##       &lt;NA&gt;    0 1941 1941
+##       Sum  3591 2020 5611
 ```
 
 
@@ -189,11 +232,18 @@ class: middle
 ###Contando registros de testes antigênicos
 
 
-```{r}
 
-xtabs( ~AN_OUTRO + AN_SARS2, data = dat, subset  = CLASSI_FIN == 5 & CRITERIO == 1,
-                                    addNA = TRUE) %>% addmargins() 
+```r
+xtabs( ~AN_OUTRO + AN_SARS2, data = dat, subset  = CLASSI_FIN == 5 &amp; CRITERIO == 1,
+                                    addNA = TRUE) %&gt;% addmargins() 
+```
 
+```
+##         AN_SARS2
+## AN_OUTRO    1 &lt;NA&gt;  Sum
+##     1       8   49   57
+##     &lt;NA&gt;  119 5435 5554
+##     Sum   127 5484 5611
 ```
 
 
@@ -211,11 +261,15 @@ class: middle
 
 ###Contando registros de testes sorológicos
 
-```{r}
 
-xtabs(~ TP_SOR, data = dat, subset =   CLASSI_FIN == 5 & CRITERIO == 1)
+```r
+xtabs(~ TP_SOR, data = dat, subset =   CLASSI_FIN == 5 &amp; CRITERIO == 1)
+```
 
-
+```
+## TP_SOR
+##    0    1    2    3    4 
+## 4189  337   10   24   19
 ```
 
  - Dentre dos 4579 registros classificados como SRAG por Covid19 usando critérios laboratorial: 337 testaram positivos para Covid 19 com Teste rápido, 10 com teste Elisa,
@@ -230,12 +284,15 @@ class: middle
 ####Obs: Baqui et. al. (2020) usaram apenas pacientes diagnosticados com Covid19 e confirmados por meio do teste RT-PCR. Vamos utilizar um critério igual para a primeira filtragem.
 
 
-```{r}
 
-datRT_PCR = filter(dat, CLASSI_FIN == 5 & POS_PCROUT == 1 &  PCR_SARS2 == 1)
+```r
+datRT_PCR = filter(dat, CLASSI_FIN == 5 &amp; POS_PCROUT == 1 &amp;  PCR_SARS2 == 1)
 
 dim(datRT_PCR)
+```
 
+```
+## [1] 3706  165
 ```
 
 - Temos 3706 registros de pacientes classificados como SRAG por Covid19 e confirmados por meio do teste RT-PCR, veja que não necessariamente o critério de encerramento foi laboratorial.
@@ -275,10 +332,9 @@ class: middle
 
 - Para começar a fazer a nossa tarefa, podemos utilizar os seguintes comandos:
 
-```{r}
 
-mn = filter(datRT_PCR, SG_UF_NOT == "GO" ) %>% select(ID_MUNICIP) %>% distinct()
-
+```r
+mn = filter(datRT_PCR, SG_UF_NOT == "GO" ) %&gt;% select(ID_MUNICIP) %&gt;% distinct()
 ```
 
 - Essa linha de comando cria um data.frame com todos os municípios de unidades de sentinela onde foram feitas as notificações.
@@ -292,18 +348,23 @@ class: middle
  - Agora podemos a fazer a filtragem dos registros que atendem as nossas necessidades.
  
  
-```{r}
 
+```r
 dat_mn = filter(datRT_PCR, ID_MUNICIP %in% mn$ID_MUNICIP)
-
 ```
 
  - Para verificar se está tudo ok, basta eu fazer uma tabela de frequencia do campo `SG_UF_NOT`. Todos os registros devem pertencer ao estado de Goiás.
  
  
-```{r}
-xtabs(~SG_UF_NOT, data = dat_mn, addNA = TRUE)
 
+```r
+xtabs(~SG_UF_NOT, data = dat_mn, addNA = TRUE)
+```
+
+```
+## SG_UF_NOT
+##   GO 
+## 3396
 ```
 
 
@@ -317,10 +378,15 @@ class: middle
 - Inicialmente, vamos calcular a frequencia absoluta
 
 
-```{r}
 
+```r
 xtabs(~EVOLUCAO, data = dat_mn, addNA = TRUE)
+```
 
+```
+## EVOLUCAO
+##    1    2    9 &lt;NA&gt; 
+## 1817 1322   31  226
 ```
 
 
@@ -362,12 +428,26 @@ class: middle
 
 
 
-```{r}
 
+```r
 xtabs(~  CARDIOPATI, addNA = TRUE, data = dat_mn)
+```
 
+```
+## CARDIOPATI
+##    1    2    9 &lt;NA&gt; 
+## 1028  689   30 1649
+```
+
+```r
 xtabs(~ FATOR_RISC + CARDIOPATI, addNA = TRUE, data = dat_mn)
+```
 
+```
+##           CARDIOPATI
+## FATOR_RISC    1    2    9 &lt;NA&gt;
+##          1 1028  689   30  335
+##          2    0    0    0 1314
 ```
 
 - Podemos interpretar que 1314 registros na verdade não tem qualquer fator de risco e portanto não sofrem de cardiopatia. Cabe ao analista corrigir essa inconsistência. 
@@ -380,8 +460,8 @@ class: middle
 
 ##Estudando Morbidades - Corrigindo inconsistências
 
-```{r}
 
+```r
 morbs = c("CARDIOPATI", "HEMATOLOGI", "HEPATICA", "ASMA", "DIABETES", "NEUROLOGIC","PNEUMOPATI", "IMUNODEPRE", "RENAL", "OBESIDADE")
 
 corr.morbs = function(x){  ifelse(dat_mn$FATOR_RISC ==2, 2, x)    }
@@ -389,10 +469,23 @@ corr.morbs = function(x){  ifelse(dat_mn$FATOR_RISC ==2, 2, x)    }
 dat_mnF = mutate_at(dat_mn, morbs, corr.morbs)
 
 xtabs(~ FATOR_RISC + CARDIOPATI, addNA = TRUE, data = dat_mnF)
+```
 
+```
+##           CARDIOPATI
+## FATOR_RISC    1    2    9 &lt;NA&gt;
+##          1 1028  689   30  335
+##          2    0 1314    0    0
+```
 
+```r
 xtabs(~  CARDIOPATI, addNA = TRUE, data = dat_mnF)
+```
 
+```
+## CARDIOPATI
+##    1    2    9 &lt;NA&gt; 
+## 1028 2003   30  335
 ```
 
 ---
@@ -403,9 +496,8 @@ class: middle
  - Deste ponto em diante, não há mais distinção entre os códigos 9 e NA, portanto podemos subsitutir 9 por NA
 
 
-```{r}
 
-
+```r
 variaveis = c("EVOLUCAO","CARDIOPATI", "HEMATOLOGI", "HEPATICA", "ASMA", "DIABETES", "NEUROLOGIC","PNEUMOPATI", "IMUNODEPRE", "RENAL", "OBESIDADE")
 
 corr.na = function(x){  ifelse(x ==9,NA, x)    }
@@ -413,10 +505,23 @@ corr.na = function(x){  ifelse(x ==9,NA, x)    }
 dat_mnF = mutate_at(dat_mnF, variaveis, corr.na )
 
 xtabs(~ FATOR_RISC + CARDIOPATI, addNA = TRUE, data = dat_mnF)
+```
 
+```
+##           CARDIOPATI
+## FATOR_RISC    1    2 &lt;NA&gt;
+##          1 1028  689  365
+##          2    0 1314    0
+```
 
+```r
 xtabs(~  CARDIOPATI, addNA = TRUE, data = dat_mnF)
+```
 
+```
+## CARDIOPATI
+##    1    2 &lt;NA&gt; 
+## 1028 2003  365
 ```
 
 
@@ -444,28 +549,26 @@ class: middle
 
 ####Tabelas de Frequencia Unidimensional
 
-```{r,eval = FALSE}
 
+```r
 #install.packages("gmodels")
 
 library(gmodels)
 
 CrossTable(dat_mnF$EVOLUCAO,    digits=3,,format = "SPSS")
-
 ```
 
 
 ####Tabelas Bidimensionais com Linhas Fixadas
 
 
-```{r, eval = FALSE}
 
+```r
 CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
            expected = FALSE, prop.chisq = FALSE,
            digits=3,
            prop.r=TRUE,prop.c=FALSE, prop.t = FALSE,
            format = "SPSS")
-
 ```
 
 
@@ -481,28 +584,26 @@ CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI,
 ####Tabelas Bidimensionais com Colunas Fixadas
 
 
-```{r, eval = FALSE}
 
+```r
 CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
            digits=3,
            expected = FALSE, prop.chisq = FALSE,
            prop.r=FALSE,prop.c=TRUE, prop.t = FALSE,
            format = "SPSS")
-
 ```
 
 
 ##Teste de Indepemdencia
 
 
-```{r, eval  = FALSE}
 
+```r
 CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
            expected = TRUE, prop.chisq = FALSE,
            chisq = TRUE,digits=3,
            prop.r=FALSE,prop.c=FALSE, prop.t = FALSE,
            format = "SPSS")
-
 ```
 
 
@@ -516,12 +617,26 @@ class: middle
 
 ####Tabelas de Distribuição de Frequencias
 
-```{r,echo = FALSE}
 
-library(gmodels)
-
-CrossTable(dat_mnF$EVOLUCAO,   max.width = 3, format = "SPSS")
-
+```
+## 
+##    Cell Contents
+## |-------------------------|
+## |                   Count |
+## |             Row Percent |
+## |-------------------------|
+## 
+## Total Observations in Table:  3139 
+## 
+##           |        1  |        2  | 
+##           |-----------|-----------|
+##           |     1817  |     1322  | 
+##           |   57.885% |   42.115% | 
+##           |-----------|-----------|
+## 
+## Number of Missing Observations: 257 (7.567727%)
+## 
+## 
 ```
 
 
@@ -532,14 +647,27 @@ class: middle
 ###Tabelas de Distribuição de Frequencias Bidimensionais - Linhas Fixadas
 
 
-```{r, echo  = FALSE}
 
-CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
-           expected = FALSE, prop.chisq = FALSE,
-             max.width = 3,
-           prop.r=FALSE,prop.c=FALSE, prop.t = FALSE,
-           format = "SPSS")
-
+```
+## 
+##    Cell Contents
+## |-------------------------|
+## |                   Count |
+## |-------------------------|
+## 
+## Total Observations in Table:  2803 
+## 
+##                  | dat_mnF$CARDIOPATI 
+## dat_mnF$EVOLUCAO |        1  |        2  | Row Total | 
+## -----------------|-----------|-----------|-----------|
+##                1 |      484  |     1153  |     1637  | 
+## -----------------|-----------|-----------|-----------|
+##                2 |      472  |      694  |     1166  | 
+## -----------------|-----------|-----------|-----------|
+##     Column Total |      956  |     1847  |     2803  | 
+## -----------------|-----------|-----------|-----------|
+## 
+## 
 ```
 
 
@@ -551,27 +679,71 @@ class: middle
 ###Tabelas de Distribuição de Frequencias Bidimensionais - Colunas Fixadas
 
 
-```{r, echo  = FALSE}
 
-CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
-           expected = FALSE, prop.chisq = FALSE,
-             max.width = 3,
-           prop.r=FALSE,prop.c=TRUE, prop.t = FALSE,
-           format = "SPSS")
-
+```
+## 
+##    Cell Contents
+## |-------------------------|
+## |                   Count |
+## |          Column Percent |
+## |-------------------------|
+## 
+## Total Observations in Table:  2803 
+## 
+##                  | dat_mnF$CARDIOPATI 
+## dat_mnF$EVOLUCAO |        1  |        2  | Row Total | 
+## -----------------|-----------|-----------|-----------|
+##                1 |      484  |     1153  |     1637  | 
+##                  |   50.628% |   62.426% |           | 
+## -----------------|-----------|-----------|-----------|
+##                2 |      472  |      694  |     1166  | 
+##                  |   49.372% |   37.574% |           | 
+## -----------------|-----------|-----------|-----------|
+##     Column Total |      956  |     1847  |     2803  | 
+##                  |   34.106% |   65.894% |           | 
+## -----------------|-----------|-----------|-----------|
+## 
+## 
 ```
 
 ---
 class: middle
 
 
-```{r, echo  = FALSE}
 
-CrossTable(dat_mnF$EVOLUCAO, dat_mnF$CARDIOPATI, 
-           expected = FALSE, prop.chisq = FALSE,
-           chisq = TRUE,digits=3,
-           prop.r=FALSE,prop.c=FALSE, prop.t = FALSE,
-           format = "SPSS")
+```
+## 
+##    Cell Contents
+## |-------------------------|
+## |                   Count |
+## |-------------------------|
+## 
+## Total Observations in Table:  2803 
+## 
+##                  | dat_mnF$CARDIOPATI 
+## dat_mnF$EVOLUCAO |        1  |        2  | Row Total | 
+## -----------------|-----------|-----------|-----------|
+##                1 |      484  |     1153  |     1637  | 
+## -----------------|-----------|-----------|-----------|
+##                2 |      472  |      694  |     1166  | 
+## -----------------|-----------|-----------|-----------|
+##     Column Total |      956  |     1847  |     2803  | 
+## -----------------|-----------|-----------|-----------|
+## 
+##  
+## Statistics for All Table Factors
+## 
+## 
+## Pearson's Chi-squared test 
+## ------------------------------------------------------------
+## Chi^2 =  36.09217     d.f. =  1     p =  1.882014e-09 
+## 
+## Pearson's Chi-squared test with Yates' continuity correction 
+## ------------------------------------------------------------
+## Chi^2 =  35.60818     d.f. =  1     p =  2.412728e-09 
+## 
+##  
+##        Minimum expected frequency: 397.6796
 ```
 
 
@@ -589,16 +761,14 @@ class: middle
 
 
 
-```{r, eval = FALSE}
 
+```r
 pp = c(1781530,  849421, 248821, 812707, 286433, 145865, 140321,116841, 112423, 488380,
         199333, 167159 , 167391, 125947, 420427 ,215282, 243991)
 
-dat_tx = group_by(dat_mnF, ID_REGIONA, EVOLUCAO) %>% summarise(obitos = n())  %>% filter(EVOLUCAO==2) %>% select(obitos) %>%ungroup() %>% mutate(pop = pp) %>% mutate(taxa = (obitos/pop)*10000) %>% mutate(taxa = round(taxa, digits=3))
+dat_tx = group_by(dat_mnF, ID_REGIONA, EVOLUCAO) %&gt;% summarise(obitos = n())  %&gt;% filter(EVOLUCAO==2) %&gt;% select(obitos) %&gt;%ungroup() %&gt;% mutate(pop = pp) %&gt;% mutate(taxa = (obitos/pop)*10000) %&gt;% mutate(taxa = round(taxa, digits=3))
 
 dat_tx
-
-
 ```
 
 
@@ -606,16 +776,28 @@ dat_tx
 class: middle
 ####Estudos de Taxas de Mortalidade 
 
-```{r, echo = FALSE, message=FALSE, warning=FALSE}
 
-pp = c(1781530,  849421, 248821, 812707, 286433, 145865, 140321,116841, 112423, 488380,
-        199333, 167159 , 167391, 125947, 420427 ,215282, 243991)
-
-dat_tx = group_by(dat_mnF, ID_REGIONA, EVOLUCAO) %>% summarise(obitos = n())  %>% filter(EVOLUCAO==2) %>% select(obitos) %>%ungroup() %>% mutate(pop = pp) %>% mutate(taxa = (obitos/pop)*10000) %>% mutate(taxa = round(taxa, digits=3))
-
-dat_tx
-
-
+```
+## # A tibble: 17 x 4
+##    ID_REGIONA       obitos     pop  taxa
+##    &lt;chr&gt;             &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1 CENTRAL             650 1781530 3.65 
+##  2 CENTRO SUL          236  849421 2.78 
+##  3 ENTORNO NORTE         5  248821 0.201
+##  4 ENTORNO SUL          41  812707 0.504
+##  5 ESTRADA DE FERRO     49  286433 1.71 
+##  6 NORDESTE              1  145865 0.069
+##  7 NORTE                 7  140321 0.499
+##  8 OESTE I               2  116841 0.171
+##  9 OESTE II              9  112423 0.801
+## 10 PIRINEUS            113  488380 2.31 
+## 11 RIO VERMELHO         12  199333 0.602
+## 12 SAO PATRICIO          6  167159 0.359
+## 13 SAO PATRICIO II      14  167391 0.836
+## 14 SERRA DA MESA         6  125947 0.476
+## 15 SUDOESTE I           92  420427 2.19 
+## 16 SUDOESTE II          27  215282 1.25 
+## 17 SUL                  52  243991 2.13
 ```
 
 
@@ -638,35 +820,31 @@ class: middle
 - Para facilitar a união dos dois conjuntos de dados vamos instalar a biblioteca `textclean`. Essa biblioteca tem uma função que se chama `replace_non_ascii` que vai nos ajudar a remover todos os caracteres especiais dos nomes. A função `toupper` converte letras maiusculas em minusculas.
  
  
-```{r, eval = FALSE, message=FALSE, warning=FALSE}
 
+```r
 ##install.packages("textclean")
 
 library(textclean)
 
-dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = str_replace_all(POPULAÇÃO.ESTIMADA, ",",".") %>% as.numeric()*1000) %>% mutate(ID_MUNICIP =replace_non_ascii(NOME.DO.MUNICÍPIO) %>% toupper()) %>% select(one_of(c("ID_MUNICIP", "POPULACAO")))
+dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %&gt;% filter(COD..UF == 52) %&gt;% mutate(POPULACAO = str_replace_all(POPULAÇÃO.ESTIMADA, ",",".") %&gt;% as.numeric()*1000) %&gt;% mutate(ID_MUNICIP =replace_non_ascii(NOME.DO.MUNICÍPIO) %&gt;% toupper()) %&gt;% select(one_of(c("ID_MUNICIP", "POPULACAO")))
 
 head(dat_IBGE)
-
-
-
-``` 
+```
  
 
 ---
 class: middle
 ##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
  
-```{r, echo= FALSE, message=FALSE, warning=FALSE}
 
-##install.packages("textclean")
-
-library(textclean)
-
-dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = str_replace_all(POPULAÇÃO.ESTIMADA, ",",".") %>% as.numeric()*1000) %>% mutate(ID_MUNICIP =replace_non_ascii(NOME.DO.MUNICÍPIO) %>% toupper()) %>% select(one_of(c("ID_MUNICIP", "POPULACAO")))
-
-head(dat_IBGE)
-
+```
+##           ID_MUNICIP POPULACAO
+## 1    ABADIA DE GOIAS      8583
+## 2          ABADIANIA     19614
+## 3            ACREUNA     22182
+## 4          ADELANDIA      2517
+## 5 AGUA FRIA DE GOIAS      5676
+## 6         AGUA LIMPA      1872
 ```
 
 ---
@@ -676,13 +854,11 @@ class: middle
 - O próximo passo é calcular a o número de óbitos por municípios.
 
 
-```{r, eval=FALSE, warning = FALSE, message = FALSE}
 
-
-dat_tx2 = group_by(dat_mnF, ID_MUNICIP, EVOLUCAO) %>% summarise(OBITOS = n()) %>% ungroup() %>% filter(EVOLUCAO==2) %>% select(-EVOLUCAO) 
+```r
+dat_tx2 = group_by(dat_mnF, ID_MUNICIP, EVOLUCAO) %&gt;% summarise(OBITOS = n()) %&gt;% ungroup() %&gt;% filter(EVOLUCAO==2) %&gt;% select(-EVOLUCAO) 
 
 head(dat_tx2)
-
 ```
 
 
@@ -696,13 +872,17 @@ class: middle
 - O próximo passo é calcular a o número de óbitos por municípios.
 
 
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
 
-
-dat_tx2 = group_by(dat_mnF, ID_MUNICIP, EVOLUCAO) %>% summarise(OBITOS = n()) %>% ungroup() %>% filter(EVOLUCAO==2) %>% select(-EVOLUCAO) 
-
-head(dat_tx2)
-
+```
+## # A tibble: 6 x 2
+##   ID_MUNICIP            OBITOS
+##   &lt;chr&gt;                  &lt;int&gt;
+## 1 AGUAS LINDAS DE GOIAS     16
+## 2 ALOANDIA                   1
+## 3 ANAPOLIS                 111
+## 4 APARECIDA DE GOIANIA     221
+## 5 APARECIDA DO RIO DOCE      1
+## 6 ARAGARCAS                  1
 ```
 
 
@@ -715,14 +895,10 @@ class: middle
 - Por fim, vamos calcular a taxa de mortalidade por 10000 habitantes.
 
 
-```{r, eval=FALSE, warning = FALSE, message = FALSE}
 
-
-dat_tx2  = left_join(dat_IBGE, dat_tx2) %>% 
-  mutate(TX_MORTALIDADE = (OBITOS/POPULACAO)*10^4 ) %>% mutate(TX_MORTALIDADE = replace_na(TX_MORTALIDADE,0)) %>% select(-one_of(c("POPULACAO", "OBITOS")))
-
-
-
+```r
+dat_tx2  = left_join(dat_IBGE, dat_tx2) %&gt;% 
+  mutate(TX_MORTALIDADE = (OBITOS/POPULACAO)*10^4 ) %&gt;% mutate(TX_MORTALIDADE = replace_na(TX_MORTALIDADE,0)) %&gt;% select(-one_of(c("POPULACAO", "OBITOS")))
 ```
 
 
@@ -730,14 +906,15 @@ dat_tx2  = left_join(dat_IBGE, dat_tx2) %>%
 class: middle
 ##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
 
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
 
-dat_tx2  = left_join(dat_IBGE, dat_tx2) %>% 
-  mutate(TX_MORTALIDADE = (OBITOS/POPULACAO)*10^4 ) %>% mutate(TX_MORTALIDADE = replace_na(TX_MORTALIDADE,0)) %>% select(-one_of(c("POPULACAO", "OBITOS")))
-
-head(dat_tx2)
-
-
+```
+##           ID_MUNICIP TX_MORTALIDADE
+## 1    ABADIA DE GOIAS              0
+## 2          ABADIANIA              0
+## 3            ACREUNA              0
+## 4          ADELANDIA              0
+## 5 AGUA FRIA DE GOIAS              0
+## 6         AGUA LIMPA              0
 ```
 
 
@@ -751,8 +928,8 @@ class: middle
 
 - Para ler os dados referentes aos municípios, pode-se usar o comando `read_municipality`
  
-```{r, eval=FALSE, message = FALSE, warnings = FALSE}
- 
+
+```r
 ##install.packages("geobr")
 
 ##install.packages("sf")
@@ -762,7 +939,6 @@ library(sf)
 
 #Carregando todos os municipios de Goias
 muniGo = read_municipality(code_muni= "GO", year=2019) 
-
 ```
 
 
@@ -776,16 +952,14 @@ class: middle
 - Mas antes vamos retirar os caracteres especiais e transformar os demais caracteres em letras maiúsculas. Vamos mudar o nome da coluna `ID_MUNICIP` para name_muni no conjunto
 `dat_tx2`.
  
-```{r, eval = FALSE, warning = FALSE, message = FALSE}
 
-muniGo =  mutate(muniGo, name_muni = replace_non_ascii(name_muni) %>% toupper()) 
+```r
+muniGo =  mutate(muniGo, name_muni = replace_non_ascii(name_muni) %&gt;% toupper()) 
 
 dat_tx2 = rename(dat_tx2, name_muni = ID_MUNICIP)
 
 muniGo = inner_join(muniGo, dat_tx2)
-
-  
-``` 
+```
 
 
 ---
@@ -795,9 +969,9 @@ class: middle
 
 - A seguir mostramos os codigos para fazer o mapa
 
-```{r, eval=FALSE}
 
- no_axis <- theme(axis.title=element_blank(),
+```r
+ no_axis &lt;- theme(axis.title=element_blank(),
                    axis.text=element_blank(),
                    axis.ticks=element_blank())
 
@@ -807,7 +981,6 @@ class: middle
       scale_fill_distiller(palette = "Spectral", name="Taxa de Mortalidade por 10000 hab", limits = c(0,5)) +
       theme_minimal() +
       no_axis
-
 ```
 
 ---
@@ -815,34 +988,7 @@ class: middle
 ##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
 
 
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
-
-library(geobr)
-library(sf)
-
-#Carregando todos os municipios de Goias
-muniGo = read_municipality(code_muni= "GO", year=2019,showProgress = FALSE) 
-
-
-muniGo =  mutate(muniGo, name_muni = replace_non_ascii(name_muni) %>% toupper()) 
-
-dat_tx2 = rename(dat_tx2, name_muni = ID_MUNICIP)
-
-muniGo = inner_join(muniGo, dat_tx2)
-
-
-no_axis <- theme(axis.title=element_blank(),
-                   axis.text=element_blank(),
-                   axis.ticks=element_blank())
-
- ggplot() +
-    geom_sf(data=muniGo, aes(fill=TX_MORTALIDADE), color= NA, size=.15) +
-      labs(subtitle="Taxa de Mortalidade de Covid 19 no Estado de Goiás", size=8) +
-      scale_fill_distiller(palette = "Spectral", name="Taxa de Mortalidade por 10000 hab", limits = c(0,5)) +
-      theme_minimal() +
-      no_axis
-
-```
+![](Aula4_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -882,3 +1028,126 @@ class: middle
 
 
 - Pereira, R.H.M.; Gonçalves, C.N.; et. all (2019). An introduction to geobr. Disponível em: https://cran.r-project.org/web/packages/geobr/vignettes/intro_to_geobr.html. Acesso em 11 de dezembro de 2020.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

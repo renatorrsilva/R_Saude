@@ -183,6 +183,10 @@ xtabs( ~POS_PCROUT + PCR_SARS2, data = dat, subset = CLASSI_FIN == 5 & CRITERIO 
 
 
 
+
+
+
+
 ---
 class: middle
 
@@ -644,9 +648,7 @@ class: middle
 
 library(textclean)
 
-dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = str_replace_all(POPULAÇÃO.ESTIMADA, ",",".") %>% as.numeric()*1000) %>% mutate(ID_MUNICIP =replace_non_ascii(NOME.DO.MUNICÍPIO) %>% toupper()) %>% select(one_of(c("ID_MUNICIP", "POPULACAO")))
-
-head(dat_IBGE)
+dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = sub(",",".", POPULAÇÃO.ESTIMADA)) %>% mutate(NOME_MUNICIPIOS =replace_non_ascii(dat_IBGE$NOME.DO.MUNICÍPIO) %>% toupper()) %>% select(one_of(c("NOME_MUNICIPIOS", "POPULACAO")))
 
 
 
@@ -663,7 +665,7 @@ class: middle
 
 library(textclean)
 
-dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = str_replace_all(POPULAÇÃO.ESTIMADA, ",",".") %>% as.numeric()*1000) %>% mutate(ID_MUNICIP =replace_non_ascii(NOME.DO.MUNICÍPIO) %>% toupper()) %>% select(one_of(c("ID_MUNICIP", "POPULACAO")))
+dat_IBGE = read.csv("Municipios.csv",header=TRUE,skip=1) %>% filter(COD..UF == 52) %>% mutate(POPULACAO = sub(",",".", POPULAÇÃO.ESTIMADA)) %>% mutate(NOME_MUNICIPIOS =replace_non_ascii(NOME.DO.MUNICÍPIO) %>% toupper())  %>% select(one_of(c("NOME_MUNICIPIOS", "POPULACAO")))
 
 head(dat_IBGE)
 
@@ -676,186 +678,12 @@ class: middle
 - O próximo passo é calcular a o número de óbitos por municípios.
 
 
-```{r, eval=FALSE, warning = FALSE, message = FALSE}
-
-
-dat_tx2 = group_by(dat_mnF, ID_MUNICIP, EVOLUCAO) %>% summarise(OBITOS = n()) %>% ungroup() %>% filter(EVOLUCAO==2) %>% select(-EVOLUCAO) 
-
-head(dat_tx2)
-
-```
-
-
-
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-- O próximo passo é calcular a o número de óbitos por municípios.
-
-
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
-
-
-dat_tx2 = group_by(dat_mnF, ID_MUNICIP, EVOLUCAO) %>% summarise(OBITOS = n()) %>% ungroup() %>% filter(EVOLUCAO==2) %>% select(-EVOLUCAO) 
-
-head(dat_tx2)
-
-```
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-- Agora precisamos unir os dois conjuntos de dados e para municípios que não se tem registros de óbitos que ele fique nulo. Podemos fazer isso com a função `left_join`. 
-
-- Por fim, vamos calcular a taxa de mortalidade por 10000 habitantes.
-
-
-```{r, eval=FALSE, warning = FALSE, message = FALSE}
-
-
-dat_tx2  = left_join(dat_IBGE, dat_tx2) %>% 
-  mutate(TX_MORTALIDADE = (OBITOS/POPULACAO)*10^4 ) %>% mutate(TX_MORTALIDADE = replace_na(TX_MORTALIDADE,0)) %>% select(-one_of(c("POPULACAO", "OBITOS")))
-
-
-
-```
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
-
-dat_tx2  = left_join(dat_IBGE, dat_tx2) %>% 
-  mutate(TX_MORTALIDADE = (OBITOS/POPULACAO)*10^4 ) %>% mutate(TX_MORTALIDADE = replace_na(TX_MORTALIDADE,0)) %>% select(-one_of(c("POPULACAO", "OBITOS")))
-
-head(dat_tx2)
-
-
-```
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
- - Enfim, passamos para etapa da construção do mapa de fato.
- 
- - Para fazer, o mapa vamos carregar algumas dados de coordenadas que já estão prontos no R na biblioteca `geobr`. Além disso, vamos instalar a biblioteca `sf` para manipular dados espaciais.
-
-- Para ler os dados referentes aos municípios, pode-se usar o comando `read_municipality`
- 
-```{r, eval=FALSE, message = FALSE, warnings = FALSE}
- 
-##install.packages("geobr")
-
-##install.packages("sf")
-
-library(geobr)
-library(sf)
-
-#Carregando todos os municipios de Goias
-muniGo = read_municipality(code_muni= "GO", year=2019) 
-
-```
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-
-- Agora, precisamos unir o conjunto de dados com as coordenadas espaciais com os dados de mortalidade, vamos usar o comando `inner_join`.
- 
-- Mas antes vamos retirar os caracteres especiais e transformar os demais caracteres em letras maiúsculas. Vamos mudar o nome da coluna `ID_MUNICIP` para name_muni no conjunto
-`dat_tx2`.
- 
-```{r, eval = FALSE, warning = FALSE, message = FALSE}
-
-muniGo =  mutate(muniGo, name_muni = replace_non_ascii(name_muni) %>% toupper()) 
-
-dat_tx2 = rename(dat_tx2, name_muni = ID_MUNICIP)
-
-muniGo = inner_join(muniGo, dat_tx2)
-
-  
-``` 
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-
-- A seguir mostramos os codigos para fazer o mapa
-
 ```{r, eval=FALSE}
 
- no_axis <- theme(axis.title=element_blank(),
-                   axis.text=element_blank(),
-                   axis.ticks=element_blank())
 
- ggplot() +
-    geom_sf(data=muniGo, aes(fill=TX_MORTALIDADE), color= NA, size=.15) +
-      labs(subtitle="Taxa de Mortalidade de Covid 19 no Estado de Goiás", size=8) +
-      scale_fill_distiller(palette = "Spectral", name="Taxa de Mortalidade por 10000 hab", limits = c(0,5)) +
-      theme_minimal() +
-      no_axis
+
 
 ```
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
-
-library(geobr)
-library(sf)
-
-#Carregando todos os municipios de Goias
-muniGo = read_municipality(code_muni= "GO", year=2019,showProgress = FALSE) 
-
-
-muniGo =  mutate(muniGo, name_muni = replace_non_ascii(name_muni) %>% toupper()) 
-
-dat_tx2 = rename(dat_tx2, name_muni = ID_MUNICIP)
-
-muniGo = inner_join(muniGo, dat_tx2)
-
-
-no_axis <- theme(axis.title=element_blank(),
-                   axis.text=element_blank(),
-                   axis.ticks=element_blank())
-
- ggplot() +
-    geom_sf(data=muniGo, aes(fill=TX_MORTALIDADE), color= NA, size=.15) +
-      labs(subtitle="Taxa de Mortalidade de Covid 19 no Estado de Goiás", size=8) +
-      scale_fill_distiller(palette = "Spectral", name="Taxa de Mortalidade por 10000 hab", limits = c(0,5)) +
-      theme_minimal() +
-      no_axis
-
-```
-
-
----
-class: middle
-##Mapas coropléticos - Estudos de taxa de mortalidade de Covid 19
-
-###Considerações Finais
-
-- Obviamente, o software R possui mais ferramentas para elaboração de mapas e de análise estatística espacial.
-
-- Maiores detalhes sobre confecção de mapas podem ser visto neste [endereço:](https://geocompr.robinlovelace.net/spatial-cv.html).
-
-
 
 
 ---
@@ -871,14 +699,3 @@ class: middle
 
 - Mayer, F. Análise Exploratória de Dados. Disponível em: 
 http://leg.ufpr.br/~fernandomayer/aulas/ce001e-2016-2/02_Analise_Exploratoria_de_Dados.html. Acesso em 9 de dezembro de 2020.
-
-
----
-class: middle
-##Referências
-
-
--   Pereira, R.H.M.; Gonçalves, C.N.; et. all (2019). geobr: Loads Shapefiles of Official Spatial Data Sets of Brazil. R package. R Found. Stat. Comput., Vienna. https://CRAN.R-project.org/package=geobr. 
-
-
-- Pereira, R.H.M.; Gonçalves, C.N.; et. all (2019). An introduction to geobr. Disponível em: https://cran.r-project.org/web/packages/geobr/vignettes/intro_to_geobr.html. Acesso em 11 de dezembro de 2020.
