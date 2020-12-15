@@ -1,9 +1,8 @@
 ---
-title: "Introdução ao software R: Aplicações na área da saúde - Módulo I"
-subtitle: "Aula 3"
-author: "Presented by Renato Rodrigues Silva"
-institute: "Federal University of Goias."
-date: "(updated: `r Sys.Date()`)"
+title: "Aula 3"
+author: "Renato Rodrigues Silva"
+institute: "Universidade Federal de Goiás."
+date: "(`r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
